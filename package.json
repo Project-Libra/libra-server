@@ -1,0 +1,30 @@
+{
+  "name": "libra-server",
+  "version": "1.0.0",
+  "description": "Server for libra",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Project-Libra/libra-server.git"
+  },
+  "author": "chronoDave",
+  "license": "GPL-3.0",
+  "scripts": {
+    "build": "tsc",
+    "start:dev": "tsc -w",
+    "start:server": "nodemon build/index.js -- dev",
+    "start": "node build/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "^15.12.2",
+    "@typescript-eslint/eslint-plugin": "^4.26.1",
+    "@typescript-eslint/parser": "^4.26.1",
+    "eslint": "^7.28.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-plugin-import": "^2.23.4",
+    "nodemon": "^2.0.7",
+    "typescript": "^4.3.2"
+  },
+  "dependencies": {
+    "leaf-db": "^5.1.3"
+  }
+}
