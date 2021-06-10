@@ -1,1 +1,1 @@
-# project-offline-scoreboard
+# Project Libra - Server
