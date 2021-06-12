@@ -3,7 +3,7 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   extends: ['airbnb-typescript/base'],
   parserOptions: {
-    project: './tsconfig.json'
+    project: './tsconfig.eslint.json'
   },
   rules: {
     // Typescript

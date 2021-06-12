@@ -1,0 +1,8 @@
+{
+  "watch": ["build/index.js"],
+  "ext": "js",
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "exec": "node build/index.js"
+}

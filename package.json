@@ -9,9 +9,9 @@
   "author": "chronoDave",
   "license": "GPL-3.0",
   "scripts": {
-    "build": "tsc",
-    "start:dev": "tsc -w",
-    "start:server": "nodemon build/index.js -- dev",
+    "build": "webpack --mode production",
+    "start:webpack": "webpack --mode development -w",
+    "start:dev": "nodemon --config .nodemon.json",
     "start": "node build/index.js"
   },
   "devDependencies": {
@@ -21,8 +21,12 @@
     "eslint": "^7.28.0",
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-plugin-import": "^2.23.4",
+    "fs-webpack-plugin": "^3.1.2",
     "nodemon": "^2.0.7",
-    "typescript": "^4.3.2"
+    "ts-loader": "^9.2.3",
+    "typescript": "^4.3.2",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.2"
   },
   "dependencies": {
     "leaf-db": "^5.1.3"

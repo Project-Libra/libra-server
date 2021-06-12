@@ -3,10 +3,11 @@ import path from 'path';
 
 import LeafDB from 'leaf-db';
 
-import { Router } from './types';
+import { Config, Router } from './types';
 
-const HOST = process.argv[2] === 'dev' ? 'localhost' : '0.0.0.0';
-const PORT = parseInt(process.env.PORT || '7777', 10);
+const CONFIG: Config = process.env.NODE_ENV === 'development' ?
+  require('../config/config.local') :
+  require('../config/config');
 
 const db = new LeafDB({
   name: 'scores',
@@ -43,6 +44,6 @@ http
       res.end();
     }
   })
-  .listen(PORT, HOST, () => {
-    console.info(`Listening on: ${HOST}:${PORT}`);
+  .listen(CONFIG.PORT, CONFIG.HOST, () => {
+    console.info(`Listening on: ${CONFIG.HOST}:${CONFIG.PORT}`);
   });

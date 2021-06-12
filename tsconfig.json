@@ -16,7 +16,6 @@
     "baseUrl": "./"
   },
   "include": [
-    "src",
-    ".eslintrc.js"
+    "src"
   ]
 }
