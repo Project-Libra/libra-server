@@ -1,5 +1,6 @@
 import { get, post } from './fetch';
 import { OsuScore } from './types';
+import { sleep } from './utils';
 
 interface OAuth {
   token_type: string
@@ -7,14 +8,67 @@ interface OAuth {
   access_token: string
 }
 
-export const getOauthToken = (client_id: number, client_secret: string) => post<OAuth>('osu.ppy.sh/oauth/token', JSON.stringify({
-  grant_type: 'client_credentials',
-  client_id,
-  client_secret,
-  scope: 'public'
-}));
+export default class OsuApi {
+  private id: number;
+  private secret: string;
 
-export const getUserRecentScores = (id: number, token: string) => get<OsuScore[]>(
-  `osu.ppy.sh/api/v2/users/${id}/scores/recent`,
-  { mode: 'mania', limit: 20 }
-);
+  constructor(options: { id: number, secret: string }) {
+    this.id = options.id;
+    this.secret = options.secret;
+  }
+
+  private async getOauthToken() {
+    try {
+      const response = await post<OAuth>('osu.ppy.sh/oauth/token', JSON.stringify({
+        grant_type: 'client_credentials',
+        client_id: this.id,
+        client_secret: this.secret,
+        scope: 'public'
+      }));
+
+      if (response.statusCode !== 200) throw new Error(JSON.stringify(response.body));
+      return response.body.access_token;
+    } catch (err) {
+      console.error(err);
+      return undefined;
+    }
+  }
+
+  private async getUserRecentScores(id: number, token: string) {
+    try {
+      const response = await get<OsuScore[]>(
+        `osu.ppy.sh/api/v2/users/${id}/scores/recent`,
+        { mode: 'mania', limit: 20 },
+        token
+      );
+
+      if (response.statusCode !== 200) throw new Error(JSON.stringify(response.body));
+      return response.body;
+    } catch (err) {
+      console.error(err);
+
+      return [];
+    }
+  }
+
+  async getScores(users: number[]) {
+    try {
+      const token = await this.getOauthToken();
+
+      if (!token) throw new Error('Unable to retreive OAuth token');
+
+      const scores: OsuScore[][] = [];
+      for (let i = 0; i < users.length; i += 1) {
+        const recentScores = await this.getUserRecentScores(users[i], token);
+        scores.push(recentScores);
+        await sleep(20);
+      }
+
+      return scores.flat();
+    } catch (err) {
+      console.error(err);
+
+      return [];
+    }
+  }
+}

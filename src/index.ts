@@ -4,7 +4,10 @@ import path from 'path';
 import LeafDB from 'leaf-db';
 
 import { Config, Router } from './types';
+import { cron } from './utils';
+import OsuApi from './api';
 
+// Setup
 const CONFIG: Config = process.env.NODE_ENV === 'development' ?
   require('../config/config.local') :
   require('../config/config');
@@ -14,36 +17,9 @@ const db = new LeafDB({
   root: path.resolve(__dirname, '../db')
 });
 
-const rootRouter: Router = async () => {
-  const docs = await db.find();
+const api = new OsuApi({
+  id: CONFIG.CLIENT.ID,
+  secret: CONFIG.CLIENT.SECRET
+});
 
-  return ({ payload: JSON.stringify(docs) });
-};
-
-const routes: [string, Router][] = [
-  ['/', rootRouter],
-];
-
-http
-  .createServer(async (req, res) => {
-    const router = routes.find(route => route[0] === req.url);
-
-    if (router) {
-      try {
-        const response = await router[1](req, res);
-
-        res.setHeader('Content-Type', response.contentType || 'application/json');
-        res.writeHead(response.status || 200);
-        res.end(response.payload);
-      } catch (err) {
-        res.writeHead(500);
-        res.end();
-      }
-    } else {
-      res.writeHead(404);
-      res.end();
-    }
-  })
-  .listen(CONFIG.PORT, CONFIG.HOST, () => {
-    console.info(`Listening on: ${CONFIG.HOST}:${CONFIG.PORT}`);
-  });
+// Init

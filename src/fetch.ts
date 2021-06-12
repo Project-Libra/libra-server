@@ -16,11 +16,13 @@ export const fetch = <T>(options: Fetch) => new Promise<FetchResponse<T>>((resol
   const req = https.request({
     host: url[0],
     path: `/${url.slice(1).join('/')}`,
-    auth: options.token ?
-      `Bearer ${options.token}` :
-      '',
     method: options.method,
-    headers: options.headers,
+    headers: {
+      ...(options.headers || {}),
+      Authorization: options.token ?
+        `Bearer ${options.token}` :
+        '',
+    },
   }, res => {
     res.on('data', (chunk: Buffer) => chunks.push(chunk));
     res.on('error', reject);

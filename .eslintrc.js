@@ -10,14 +10,16 @@ module.exports = {
     '@typescript-eslint/comma-dangle': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/lines-between-class-members': 'off',
+    '@typescript-eslint/naming-convention': 'off',
     // General
     'linebreak-style': 'off',
     'class-methods-use-this': 'off',
     'no-nested-ternary': 'off',
     'operator-linebreak': ['error', 'after'],
     'arrow-parens': ['error', 'as-needed'],
+    'no-await-in-loop': 'off',
     'no-console': ['error', {
-      allow: ['warn', 'info']
+      allow: ['error', 'warn', 'info']
     }],
     'max-len': 'off',
     // Import
