@@ -1,5 +1,7 @@
 import http from 'http';
 
+import { Doc } from 'leaf-db';
+
 export interface Config {
   HOST: string
   PORT: number
@@ -25,6 +27,8 @@ export interface FetchResponse<T> {
   body: T
 }
 
+// osu! API
+
 export type OsuStatus = 'pending' | 'wip' | 'graveyard';
 
 export interface OsuMods {}
@@ -40,15 +44,15 @@ export interface OsuStatistics {
 
 export interface OsuBeatmap {
   difficulty_rating: number
-  id: number
+  id: string
   mode: 'mania'
   status: OsuStatus
   total_length: number
-  user_id: number
+  user_id: string
   version: string
   accuracy: number
   ar: number
-  beatmapset_id: number
+  beatmapset_id: string
   bpm: number
   convert: boolean
   count_circles: number
@@ -86,7 +90,7 @@ export interface OsuBeatmapset {
   creator: string
   favourite_count: number
   hype: null | number
-  id: number
+  id: string
   nsfw: boolean
   play_count: number
   preview_url: string
@@ -94,15 +98,15 @@ export interface OsuBeatmapset {
   status: OsuStatus
   title: string
   title_unicode: string
-  user_id: number
+  user_id: string
   video: boolean
 }
 
-export interface OsuUser {
+export interface OsuUser extends Doc {
   avatar_url: string
   country_code: string
   default_group: string
-  id: number
+  id: string
   is_active: boolean
   is_bot: boolean
   is_deleted: boolean
@@ -114,9 +118,9 @@ export interface OsuUser {
   username: string
 }
 
-export interface OsuScore {
-  id: number
-  user_id: number
+export interface OsuScore extends Doc {
+  id: string
+  user_id: string
   accuracy: number
   mods: OsuMods[]
   score: number

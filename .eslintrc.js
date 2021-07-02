@@ -14,6 +14,7 @@ module.exports = {
     // General
     'linebreak-style': 'off',
     'class-methods-use-this': 'off',
+    'no-underscore-dangle': 'off',
     'no-nested-ternary': 'off',
     'operator-linebreak': ['error', 'after'],
     'arrow-parens': ['error', 'as-needed'],

@@ -29,6 +29,6 @@
     "webpack-cli": "^4.7.2"
   },
   "dependencies": {
-    "leaf-db": "^5.1.3"
+    "leaf-db": "^6.1.0"
   }
 }

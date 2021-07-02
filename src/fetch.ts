@@ -54,7 +54,7 @@ export const post = <T>(url: string, payload: string, token?: string) => fetch<T
   payload
 });
 
-export const get = <T>(url: string, params: Record<string, string | number>, token?: string) => fetch<T>({
+export const get = <T>(url: string, params: Record<string, string | number | string[] | number[]>, token?: string) => fetch<T>({
   url: `${url}${Object.entries(params).reduce((acc, cur) => `${acc}&${cur[0]}=${cur[1]}`, '?')}`,
   method: 'GET',
   token

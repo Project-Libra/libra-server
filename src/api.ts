@@ -1,5 +1,5 @@
 import { get, post } from './fetch';
-import { OsuScore } from './types';
+import { OsuScore, OsuUser } from './types';
 import { sleep } from './utils';
 
 interface OAuth {
@@ -34,7 +34,7 @@ export default class OsuApi {
     }
   }
 
-  private async getUserRecentScores(id: number, token: string) {
+  private async getUserRecentScores(id: string, token: string) {
     try {
       const response = await get<OsuScore[]>(
         `osu.ppy.sh/api/v2/users/${id}/scores/recent`,
@@ -51,7 +51,28 @@ export default class OsuApi {
     }
   }
 
-  async getScores(users: number[]) {
+  async getUser(id: string) {
+    try {
+      const token = await this.getOauthToken();
+
+      if (!token) throw new Error('Unable to retreive OAuth token');
+
+      const response = await get<OsuUser>(
+        `osu.ppy.sh/api/v2/users/${id}/mania`,
+        {},
+        token
+      );
+
+      if (response.statusCode !== 200) throw new Error(JSON.stringify(response.body));
+      return response.body;
+    } catch (err) {
+      console.error(err);
+
+      return null;
+    }
+  }
+
+  async getScores(users: string[], timeout = 20) {
     try {
       const token = await this.getOauthToken();
 
@@ -61,7 +82,7 @@ export default class OsuApi {
       for (let i = 0; i < users.length; i += 1) {
         const recentScores = await this.getUserRecentScores(users[i], token);
         scores.push(recentScores);
-        await sleep(20);
+        await sleep(timeout);
       }
 
       return scores.flat();
