@@ -1,5 +1,5 @@
 import { get, post } from './fetch';
-import { OsuScore, OsuUser } from './types';
+import { Score, OsuScore } from './types';
 import { sleep } from './utils';
 
 interface OAuth {
@@ -43,7 +43,20 @@ export default class OsuApi {
       );
 
       if (response.statusCode !== 200) throw new Error(JSON.stringify(response.body));
-      return response.body;
+
+      const data: Score[] = response.body.map(score => ({
+        _id: `${score.id}`,
+        user_id: score.user_id,
+        accuracy: score.accuracy,
+        mods: score.mods,
+        score: score.score,
+        max_combo: score.max_combo,
+        created_at: score.created_at,
+        beatmap_id: score.beatmap.id,
+        beatmapset_id: score.beatmap.beatmapset_id
+      }));
+
+      return data;
     } catch (err) {
       console.error(err);
 
@@ -51,26 +64,26 @@ export default class OsuApi {
     }
   }
 
-  async getUser(id: string) {
-    try {
-      const token = await this.getOauthToken();
+  // async getUser(id: string) {
+  //   try {
+  //     const token = await this.getOauthToken();
 
-      if (!token) throw new Error('Unable to retreive OAuth token');
+  //     if (!token) throw new Error('Unable to retreive OAuth token');
 
-      const response = await get<OsuUser>(
-        `osu.ppy.sh/api/v2/users/${id}/mania`,
-        {},
-        token
-      );
+  //     const response = await get<OsuUser>(
+  //       `osu.ppy.sh/api/v2/users/${id}/mania`,
+  //       {},
+  //       token
+  //     );
 
-      if (response.statusCode !== 200) throw new Error(JSON.stringify(response.body));
-      return response.body;
-    } catch (err) {
-      console.error(err);
+  //     if (response.statusCode !== 200) throw new Error(JSON.stringify(response.body));
+  //     return response.body;
+  //   } catch (err) {
+  //     console.error(err);
 
-      return null;
-    }
-  }
+  //     return null;
+  //   }
+  // }
 
   async getScores(users: string[], timeout = 20) {
     try {
@@ -78,7 +91,7 @@ export default class OsuApi {
 
       if (!token) throw new Error('Unable to retreive OAuth token');
 
-      const scores: OsuScore[][] = [];
+      const scores: Score[][] = [];
       for (let i = 0; i < users.length; i += 1) {
         const recentScores = await this.getUserRecentScores(users[i], token);
         scores.push(recentScores);
